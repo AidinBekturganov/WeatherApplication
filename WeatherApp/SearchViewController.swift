@@ -12,8 +12,9 @@ import Foundation
 
 class SearchViewController: UITableViewController, UISearchControllerDelegate {
     
-    
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var addBarButton: UIBarButtonItem!
+    
     var locations = LocationListViewController()
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -29,20 +30,14 @@ class SearchViewController: UITableViewController, UISearchControllerDelegate {
                 self.searchLocation.append(newLocation)
                 self.tableView.reloadData()
                 self.searchBar.isHidden = true
-
+                
             }
         }
     }
     
-    func setupSearchBar() {
-        let searchController = UISearchController(searchResultsController: nil)
-        navigationItem.searchController = searchController
-        searchController.delegate = self
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupSearchBar()
+        addBarButton.isEnabled = false
         searchBar.delegate = self
     }
     
@@ -55,7 +50,7 @@ class SearchViewController: UITableViewController, UISearchControllerDelegate {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CellForSearch", for: indexPath)
         
         cell.textLabel?.text = searchLocation[indexPath.row].name
         
@@ -63,7 +58,8 @@ class SearchViewController: UITableViewController, UISearchControllerDelegate {
     }
 }
 
-extension SearchViewController: UISearchBarDelegate{
+extension SearchViewController: UISearchBarDelegate {
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         guard let searchBarText = searchBar.text else { return }
@@ -74,6 +70,7 @@ extension SearchViewController: UISearchBarDelegate{
                 print(error)
             case .success(let info):
                 self?.infoOfCities = info
+                self?.addBarButton.isEnabled = true
             }
         }
     }
